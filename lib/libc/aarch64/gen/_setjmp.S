@@ -90,8 +90,12 @@ ENTRY(_longjmp)
 	ldp	d14, d15, [x0]
 #endif
 
-	/* Load the return value */
-	mov	x0, x1
+	/*
+	 * Load the return value.
+	 * If the value is 0, longjmp should make setjmp() return 1, not 0.
+	 */
+	cmp	x1, #0
+	csinc	x0, x1, xzr, ne
 	ret
 
 botch:
