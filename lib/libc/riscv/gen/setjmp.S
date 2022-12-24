@@ -159,8 +159,12 @@ ENTRY(longjmp)
 	addi	a0, a0, (12 * 8)
 #endif
 
-	/* Load the return value */
-	mv	a0, a1
+	/*
+	 * Load the return value.
+	 * If the value is 0, longjmp should make setjmp() return 1, not 0.
+	 */
+	seqz	a0, a1				/* a0 = (a1 == 0) ? 1 : 0; */
+	add	a0, a0, a1
 	ret
 
 botch:
